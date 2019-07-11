@@ -1,0 +1,48 @@
+LIST:
+nodesRead	//all nodes without their connected edges, integer
+edgesRead		//all edges without the nodes, this list contains Integer[]
+remainNodes	//remaining nodes after elimination
+remainEdges	//edges of remaining nodes after elimiation
+
+INT clique
+
+BOOL:
+check[edges]	//check if the particular node is connected to other remaining nodes
+masterCheck	//tracks if all checks are true
+
+//elimination of nodes
+//required: every node required at least (clique - 1) edges
+LOOP items in edgesRead
+      IF items.length >= (clique - 1)
+	remainNodes.add(item)
+      END
+END
+
+IF remainNodes.size < clique
+      EXIT
+      PRINT ("No k clique found")
+
+ELSE
+     LOOP node in remainNodes, counter = i
+	LOOP otherNode in remainNodes, counter j
+	     IF otherNode = node
+		CONTINUE
+	    
+	     ELSE
+		IF remainEdges.get(i) CONTAINS otherNode
+		    check [j] = TRUE
+		ELSE
+		     IF remainNodes.length == clique
+			EXIT
+			PRINT ("No k clique found")
+		    check[j] = FALSE
+		END
+	     END
+	     
+	END
+	
+	check how many times FALSE occurs in check[]
+
+     END
+     
+END

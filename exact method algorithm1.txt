@@ -1,0 +1,110 @@
+LIST:
+nodesRead		//all nodes without their connected edges, integer
+edgesRead		//all edges without the nodes, this list contains Integer[]
+remainNodes		//remaining nodes after elimination
+remainEdges		//edges of remaining nodes after elimiation
+tempNodesList	//used during elimination process
+tempEdgesList
+
+INT k 			//clique
+
+BOOL:
+check[edges]	//check if the particular node is connected to other remaining nodes
+masterCheck		//keep track of all checks of nodes (must be true)
+
+//elimination of nodes
+//required:
+//1--	every node required at least (k - 1) edges
+//2--	the number of valid Nodes must be same as or more than k
+//3--	the edges of every nodes must be at least connected to (k-1)
+		number of other remaining valid nodes
+//4--	
+
+LOOP items in edgesRead
+	IF items.length >= (k - 1), counter = x
+		remainNodes.add(nodesRead.get(x))
+		remainEdges.add(item)
+    END
+END
+
+
+IF remainNodes.size < k
+    EXIT
+    PRINT ("k-clique not found")
+
+ELSE
+    CALL findClique(remainNodes, remainEdges, tempNodesList)
+	
+	IF findClique == true
+		PRINT ("k-clique found")
+	END
+	
+	
+     
+END
+
+FUNC BOOL findClique (remainNodes, remainEdges, tempNodesList, tempEdgesList)
+	LOOP node in remainNodes, counter = i
+		LOOP otherNode in remainNodes, counter j
+			IF otherNode = node
+				check[j] = TRUE
+			ELSE
+				IF remainEdges.get(i) CONTAINS otherNode
+					check [j] = TRUE
+				ELSE
+					IF remainNodes.size() == k
+						PRINT ("k-clique not found")
+						BREAK/EXIT ALL
+						RETURN FALSE
+							
+					ELSE
+						check[j] = FALSE
+					END
+				END
+			END
+		END
+		
+		
+		//check how many times TRUE occurs in check[]
+		INT countTrue
+		LOOP c in check, counter = x
+			IF c[x] == TRUE
+				countTrue ++
+			END
+		END 
+		
+		IF countTrue >= (k - 1)
+			masterCheck[i] = TRUE
+			tempNodesList.add(node)							//add node to tempList
+			tempEdgesList.add(remainEdges.get(i))		//add the node's edges
+			
+		ELSE
+			masterCheck[i] = FALSE
+		END
+			 
+		
+	END
+		
+	
+		
+	IF tempNodesList.size() < k
+		BREAK/EXIT
+		RETURN FALSE
+	ELSE
+		//recursive
+		IF masterCheck.contains(FALSE)
+			remainNodes = tempNodesList
+			remainEdges = tempEdgesList
+			CALL findClique(remainNodes, remainEdges, tempNodesList, tempEdgesList)
+			
+		ELSE
+			//remainNodes are the nodes connected to each other to form k-clique
+			IF remainNodes.size() < k
+				RETURN FALSE
+			ELSE
+				RETURN TRUE
+			END
+		END
+	END	
+
+END
