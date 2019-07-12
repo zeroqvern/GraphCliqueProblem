@@ -113,7 +113,9 @@ public class ExhaustiveSearch {
     private boolean findClique (Map <Integer, int[]> remainM)
     {
         tempMapNodes.clear();
+        
         int nodesSize = remainM.size();
+        
         boolean[]  masterCheck = new boolean[nodesSize];
         
         if (nodesSize < k)
@@ -151,7 +153,7 @@ public class ExhaustiveSearch {
                 if (check[c] == true)
                     countTrue ++;
             }
-            if (countTrue >= (k))
+            if (countTrue > k)
             {
                 masterCheck[masterCount] = true;
                 tempMapNodes.put(currentNode, e);

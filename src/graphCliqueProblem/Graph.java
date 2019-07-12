@@ -61,7 +61,7 @@ public class Graph {
 
     public void setNoOfNodes(int n) {
         if (n == 0) {
-            int max = 25;
+            int max = 30;
             int min = 10;
             int r = 0;
 
@@ -141,7 +141,7 @@ public class Graph {
         if (k == 0)
         {
                
-            minD = max * 0.6;
+            minD = max * 0.5;
 
 
             int min = (int) minD;
@@ -253,18 +253,18 @@ public class Graph {
         mapEdges();
         
         Map<Integer, int[]> nodeMap = getMapNodes();
-        
-         for(Integer key:nodeMap.keySet())
-        {
-            System.out.printf("%-3d"+ " %s ",key, "|");
-
-            int[] z = nodeMap.get(key);
-            for(int item : z)
-            {
-                System.out.printf("%d"+"%s",item, "--");
-            }
-             System.out.printf("%n");
-         }
+//        
+//         for(Integer key:nodeMap.keySet())
+//        {
+//            System.out.printf("%-3d"+ " %s ",key, "|");
+//
+//            int[] z = nodeMap.get(key);
+//            for(int item : z)
+//            {
+//                System.out.printf("%d"+"%s",item, "--");
+//            }
+//             System.out.printf("%n");
+//         }
     }
 
     
