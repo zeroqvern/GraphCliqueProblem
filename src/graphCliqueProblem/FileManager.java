@@ -94,10 +94,11 @@ public class FileManager {
 
     public String getPathtoText(int fileType, int sampleNum) {
         String allSampleText = "Overall_Sample_Results.txt";
-        String csvText = "Overall.csv";
+        String csvText = "E_S.csv";
         String sampleText = "sample #";
         String txtExt = ".txt";
-        String csvExt = ".csv";
+        String csvText2 = "GRASP.csv";
+        String csvText3 = "GRASP-Accuracy.csv";
 
         String graphTempText = "graphTemp.txt";
         String timeText = "time.txt";
@@ -122,6 +123,15 @@ public class FileManager {
 //                String csvFile = csvText+ sampleNum + csvExt;
                 fileInDir = new File(this.dirDataPath, csvText);
                 return fileInDir.getPath();
+
+            case 4:
+                fileInDir = new File(this.dirDataPath, csvText2);
+                return fileInDir.getPath();
+
+            case 5:
+                fileInDir = new File(this.dirDataPath, csvText3);
+                return fileInDir.getPath();
+
         }
 
         return fileInDir.getPath();
@@ -202,8 +212,8 @@ public class FileManager {
         print_line.close();
     }
 
-    public void writeCSVHeader(int graphNum) throws IOException {
-        String s = getPathtoText(3, graphNum);
+    public void writeCSVHeader(int graphNum, int csvNum) throws IOException {
+        String s = getPathtoText(csvNum, graphNum);
         FileWriter write = new FileWriter(s, append_to_file);
         PrintWriter print_line = new PrintWriter(write);
 
@@ -213,8 +223,8 @@ public class FileManager {
         print_line.close();
     }
 
-    public void writeCSVSample(Graph g, int graphNum) throws IOException {
-        String s = getPathtoText(3, graphNum);
+    public void writeCSVSample(Graph g, int graphNum, int csvNum) throws IOException {
+        String s = getPathtoText(csvNum, graphNum);
         FileWriter write = new FileWriter(s, append_to_file);
         PrintWriter print_line = new PrintWriter(write);
 
@@ -228,6 +238,21 @@ public class FileManager {
 
         String text = graphNum + ", " + n + ", " + d + "," + e + ", " + k + ", " + found + ", " + time;
         print_line.println(text);
+        print_line.close();
+    }
+
+    public void writeCSVAccuracy(List<Double> accuracyList, int iteration) throws IOException {
+         String s = getPathtoText(5, 0);
+        FileWriter write = new FileWriter(s, append_to_file);
+        PrintWriter print_line = new PrintWriter(write);
+        
+         String headerText = "#,iterations.Accuracy";
+         print_line.println(headerText);
+        
+        for (int i = 0; i < accuracyList.size(); i++)
+        {
+            print_line.println(i + "," + iteration + ","+ accuracyList.get(i));
+        }
         print_line.close();
     }
 

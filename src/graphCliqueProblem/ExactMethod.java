@@ -120,7 +120,9 @@ public class ExactMethod {
         
         validNodes = getValidNodes(validMap);
 
+        this.nodesCombination.clear();
         createCombination(validNodes, size, k);
+        
         
         ArrayList<int[]> comboSets = getCombination();
         Map<Integer, int[]> comboMap = new HashMap<>();
@@ -192,6 +194,7 @@ public class ExactMethod {
         // A temporary array to store all combination one by one 
         int data[] = new int[kSize];
         
+        this.nodesCombination.clear();
         // Print all combination using temprary array 'data[]' 
         combinationUtil(arr, data, 0, nodeSize - 1, 0, kSize);
     }

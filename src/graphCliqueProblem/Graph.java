@@ -8,6 +8,8 @@ package graphCliqueProblem;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -82,7 +84,7 @@ public class Graph {
     public void setDensity(double d) {
         if (d == 0) {
             int max = 100;
-            int min = 10;
+            int min = 60;
             int r = 0;
 
             Random rand = new Random();
@@ -90,8 +92,7 @@ public class Graph {
 
             double den = (double) r / 100.0;
             density = den;
-        } 
-        else {
+        } else {
             density = d;
         }
     }
@@ -101,33 +102,21 @@ public class Graph {
         return noOfEdges;
     }
 
-    public void setNoOfEdges(double fixed) {
-        
+    public void setNoOfEdges() {
+
         int n = getNoOfNodes();
         double d = getDensity();
         int r = 0;
         int max = (n * (n - 1)) / 2;
 
-        if(fixed == 0.0)
-       {
-        double m = n * d;
-        int min = (int) m;
+        double e = 0;
+        e = max * d;
 
-        Random rand = new Random();
-        r = 0;
-        r = rand.nextInt((max - min) + 1) + min;
-       }
-        else
-        {
-            double  e = 0;
-            e = max * d;
+        r = (int) e;
 
-            r = (int)e;
-        }
-        
         this.noOfEdges = r;
     }
-    
+
     //k-clique    
     public int getk_clique() {
         return k_clique;
@@ -137,12 +126,10 @@ public class Graph {
         int clique = 0;
         int max = getNoOfNodes();
         double minD = 0;
-        
-        if (k == 0)
-        {
-               
-            minD = max * 0.5;
 
+        if (k == 0) {
+
+            minD = max * 0.5;
 
             int min = (int) minD;
             double cliqueD = 0.0;
@@ -156,11 +143,9 @@ public class Graph {
             } while (cliqueD < minD);
 
             k_clique = clique;
-        }
-        else
-        {
-            minD = max *k;
-            k_clique = (int)minD;
+        } else {
+            minD = max * k;
+            k_clique = (int) minD;
         }
     }
 
@@ -201,8 +186,6 @@ public class Graph {
         this.mapNodes = m;
     }
 
-    
-
     //found
     public boolean isCliqueFound() {
         return cliqueFound;
@@ -220,15 +203,8 @@ public class Graph {
     public void setRunningTime(double s) {
         runTime = s;
     }
-    
-    
-    
-    
 
     //--------------------functions--------------------//
-    
-    
-    
     private void begin() {
         System.out.println("generating graph.........");
 
@@ -248,30 +224,29 @@ public class Graph {
 //
 //            System.out.printf("%-2d" + "%s" + "%-2d" + "%n", allPairs[i][0], " <-->  ", allPairs[i][1]);
 //        }
-  
+
         System.out.println("mapping edges............");
         mapEdges();
-        
+
         Map<Integer, int[]> nodeMap = getMapNodes();
-//        
-//         for(Integer key:nodeMap.keySet())
-//        {
-//            System.out.printf("%-3d"+ " %s ",key, "|");
-//
-//            int[] z = nodeMap.get(key);
-//            for(int item : z)
-//            {
-//                System.out.printf("%d"+"%s",item, "--");
-//            }
-//             System.out.printf("%n");
-//         }
+        
+         for(Integer key:nodeMap.keySet())
+        {
+            System.out.printf("%-3d"+ " %s ",key, "|");
+
+            int[] z = nodeMap.get(key);
+            for(int item : z)
+            {
+                System.out.printf("%d"+"%s",item, "--");
+            }
+             System.out.printf("%n");
+         }
     }
 
-    
     public void setup(int n, double d, double k) {
         setNoOfNodes(n);
         setDensity(d);
-        setNoOfEdges(d);
+        setNoOfEdges();
         setk_clique(k);
 
 //          System.out.println("Nodes: " + getNoOfNodes() + "\nEdges: " + getNoOfEdges() +
@@ -397,8 +372,7 @@ public class Graph {
 //         }
     }
 
-    //write nodes and edges to file
-    public int[] getEdgesArray(int count, int i, int[][] pair, int node, boolean first) {
+    private int[] getEdgesArray(int count, int i, int[][] pair, int node, boolean first) {
         List<Integer> pairedEdges = new ArrayList<>();
 
         for (int j = count; j > 0; j--) {
@@ -416,21 +390,90 @@ public class Graph {
 
     }
 
-    public void writeFile() throws IOException {
+    //getEdgesCount per node
+    public int getEdgesCount(int n) {
+        Map<Integer, int[]> nodesMap = getMapNodes();
+        int edgesCount = 0;
+        for (Integer currentNode : nodesMap.keySet()) {
+            if (currentNode == n) {
+                edgesCount = nodesMap.get(currentNode).length;
+            }
+        }
+        return edgesCount;
+    }
+
+    //get nodes only
+    public List<Integer> getNodesList() {
+        List<Integer> nodesList = new ArrayList<Integer>();
+        for (Integer i : getMapNodes().keySet()) {
+            nodesList.add(i);
+        }
+
+        return nodesList;
+    }
+    
+    public Map<Integer, int[]> getMapByNodes(List<Integer>nodesList)
+    {
+        Map<Integer, int[]> map = new HashMap<>();
+        map = getMapNodes();
+        Map<Integer, int[]> returnMap = new HashMap<>();
+        
+        for(int i : nodesList)
+        {
+            int[] value = map.get(i);
+            returnMap.put(i, value);
+        }
+        
+        return returnMap;
+    }
+    
+
+    public int[][] sortArrByEdgesCount(Map<Integer, int[]> nodesMap) {
+        int size = nodesMap.size();
+        int[][] nodesEdgesCount = new int[size][2];
+        int edgeCount = 0;
+        int nodeCount = 1;
+
+        for (int i = 0; i < size; i++) {
+            edgeCount = getEdgesCount(nodeCount);
+            nodesEdgesCount[i][0] = nodeCount;
+            nodesEdgesCount[i][1] = edgeCount;
+            nodeCount++;
+        }
+
+        Arrays.sort(nodesEdgesCount, Comparator.comparingInt(b -> b[1]));
+
+        return nodesEdgesCount;
+    }
+    
+    public int[] sortArrByEdgesNodeList (Map<Integer, int[]> nodesMap)
+    {
+        int[] nodeList = new int[nodesMap.size()];
+        int[][] n = new int[nodesMap.size()][2];
+        
+        n = sortArrByEdgesCount(nodesMap);
+        for(int i =0; i < n.length; i++)
+        {
+            nodeList[i] = n[i][0];
+        }
+        return nodeList;
+    }
+
+    public void writeFile(int csvNum) throws IOException {
 
         System.out.println("Writing to files.......");
         FileManager fm = new FileManager();
         fm.createDir(graphNum);
 
-        if (sampleNum  == 1 && graphNum == 1) {
+        if (sampleNum == 1 && graphNum == 1) {
             fm.writeOverallSampleHeader(graphNum);
-            fm.writeCSVHeader(graphNum);
+            fm.writeCSVHeader(graphNum, csvNum);
         }
 
         fm.writeOverallSample(this, sampleNum);
         System.out.println("write overall sample complete....");
 
-        fm.writeCSVSample(this ,graphNum);
+        fm.writeCSVSample(this, graphNum, csvNum);
         System.out.println("write overall in csv complete....");
 
 //        fm.writeSample(graphNum, sampleNum, this);
